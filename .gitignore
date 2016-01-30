@@ -1,3 +1,8 @@
+.dist
+.git
+.tmp
+.DS_Store
+.gitignore
 bower_components
 copiasemana2
 node_modules
