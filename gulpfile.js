@@ -23,7 +23,7 @@ gulp.task('jshint', function() {
 
 // Define usemin
 gulp.task('usemin',['jshint'], function() {
-	return gulp.src('app/**/*.html')
+	return gulp.src('./app/**/*.html')
 		.pipe(usemin({
 			css: [ minifycss(),rev() ],
 			js: [ ngannotate(), uglify(), rev() ]
@@ -50,13 +50,11 @@ gulp.task('clean', function() {
 
 //fonts
 gulp.task('copyfonts', ['clean'], function() {
-	gulp.src('./bower_components/font-awesome/fonts/**/*.{ttf,woff,eof,svg}*')
-	.pipe(gulp.dest('.dist/fonts'));
-	gulp.src('./bower_components/bootstrap/dist/fonts/**/*.{ttf,woff,eof,svg}*')
-	.pipe(gulp.dest('./dist/fonts'));
+   gulp.src('./bower_components/font-awesome/fonts/**/*.{ttf,woff,eof,svg}*')
+   .pipe(gulp.dest('./dist/fonts'));
+   gulp.src('./bower_components/bootstrap/dist/fonts/**/*.{ttf,woff,eof,svg}*')
+   .pipe(gulp.dest('./dist/fonts'));
 });
-
-
 
 
 
