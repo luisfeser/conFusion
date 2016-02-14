@@ -57,7 +57,7 @@ angular.module('confusionApp')
                         
         }])
 
-        .controller('FeedbackController', ['$scope', function($scope) {
+        .controller('FeedbackController', ['$scope', '$stateParams', 'feedbackFactory', function($scope, $stateParams, feedbackFactory) {
             
             $scope.sendFeedback = function() {
                 
@@ -68,6 +68,16 @@ angular.module('confusionApp')
                     console.log('incorrect');
                 }
                 else {
+                    // first save feedback in JsonDB
+                    feedbackFactory.getFeedback().save($scope.feedback).$promise.then(
+                    function(){
+                        window.alert("Thank you for your feedback!");
+                    },
+                    function(response) {
+                        window.alert("Sorry, can't save your feedback because this error: "+response.status + " " + response.statusText);
+                        //$scope.message = "Error: "+response.status + " " + response.statusText;
+                    });
+                    // then restore form
                     $scope.invalidChannelSelection = false;
                     $scope.feedback = {mychannel:"", firstName:"", lastName:"", agree:false, email:"" };
                     $scope.feedback.mychannel="";
@@ -128,17 +138,49 @@ angular.module('confusionApp')
                     }
                 ); 
 
-            var promotionDish = menuFactory.getPromotion(0);
-            $scope.promotionDish = promotionDish;
+
+            $scope.showPromo = false;
+            $scope.message = "Loading...";
+            $scope.promotionDish = menuFactory.getPromotion().get({id:0}).$promise.then(
+                    function(response){
+                        $scope.promotionDish = response;
+                        $scope.showPromo = true;
+                    },
+                    function(response){
+                        $scope.message = "Error: "+response.status + " " + response.statusText;
+                    }
+                ); 
 
             // our Cheff Specialist
-            var chefLeader = corporateFactory.getLeader(3);
-            $scope.chefLeader = chefLeader;
+
+            $scope.showLeader=false;
+            $scope.message ="Loading...";
+            $scope.chefLeader = corporateFactory.getLeaders().get({id:3}).$promise.then(
+                function(response){
+                    $scope.chefLeader = response;
+                    $scope.showLeader = true;
+                },
+                function(response){
+                    $scope.message="Error: "+response.status+ " " + response.statusText;
+                }
+            );
         }])
 
-        .controller('AboutController', ['$scope', 'corporateFactory', function($scope, corporateFactory) {
-            var leaders = corporateFactory.getLeaders();
-            $scope.leaders = leaders;
+        .controller('AboutController', ['$scope', '$stateParams','corporateFactory', function($scope, $stateParams, corporateFactory) {
+
+            $scope.showLeaders=false;
+            $scope.message ="Loading...";
+
+            corporateFactory.getLeaders().query(
+                function(response){
+                    $scope.leaders = response;
+                    $scope.showLeaders = true;
+                },
+                function(response){
+                    $scope.message="Error: "+response.status+ " " + response.statusText;
+                }
+            );
+
         }])
 
 ;
